@@ -1,0 +1,24 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "Product ordering app",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/beccashieh/Bamazon.git"
+  },
+  "author": "Becca Shieh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/beccashieh/Bamazon/issues"
+  },
+  "homepage": "https://github.com/beccashieh/Bamazon#readme",
+  "dependencies": {
+    "cli-table2": "^0.2.0",
+    "inquirer": "^6.3.1",
+    "mysql": "^2.17.1"
+  }
+}
