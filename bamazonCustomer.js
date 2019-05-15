@@ -1,28 +1,31 @@
 var inquirer = require("inquirer");
 var mysql = require("mysql");
-var config = require("./config");
+// var config = require("./config");
 var Table = require('cli-table2');
 
+//Sets styling for table appearance
 var table = new Table({
     style: { head: ["blue", "bgWhite"]},
     head: ['ID', 'Name', 'Department', 'Price', 'In Stock'],
     colWidths: [10, 20, 20, 15, 15]
 });
 
-
+//Contains env variables for the database on AWS
 var connection = mysql.createConnection({
-    host: "gtcbcmysql.cotq4aag83ga.us-east-1.rds.amazonaws.com",
-    port: 3306,
-    user: "beccashieh",
-    password: "Blahblah4624!",
-    database: "bamazon_DB"
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB
 });
 
+//Establishes connection and calls function to display the table in the terminal.
 connection.connect(function(err){
     if (err) throw err;
     listProducts();
 });
 
+//Generates the table 
 function listProducts(){
     connection.query("SELECT * FROM products", function(err, results){
         if (err) throw err;
@@ -43,6 +46,8 @@ function listProducts(){
     })
 }
 
+//Calls the inquirer prompts to ask the user which product they would like to buy and how many.
+//Uses data from the table
 function start(){
     connection.query("SELECT * FROM products", function(err, results){
         if (err) throw err;
@@ -50,14 +55,8 @@ function start(){
         .prompt([
         {
             name: "choice",
-            type: "rawlist",
-            choices: function(){
-                var choiceArray = [];
-                for (var i = 0; i < results.length; i++){
-                    choiceArray.push(results[i].item_name);
-                }
-                return choiceArray;
-            },
+            type: "input",
+            choices: [],
             message: "Which item would you like to buy? Enter the item ID."
         },
         {
@@ -66,28 +65,30 @@ function start(){
             message: "How many units of this item would you like to buy?"
         }
         ])
+        //Uses answers to compare if there is sufficient quantity then update with total or restart prompts if stock is insufficient.
         .then(function(answer){
             var chosenItem;
             for (var i =0; i < results.length; i++){
-                if (results[i].item_name === answer.choice){
+                if (results[i].item_id === parseInt(answer.choice)){
                     chosenItem = results[i];
                 }
             }
-            if (chosenItem.stock_quantity < parseInt(answer.units)){
+            if (chosenItem.stock_quantity > parseInt(answer.units)){
                 connection.query(
                     "UPDATE products SET ? WHERE ?",
                     [
                         {
-                            stock_quantity: stock_quantity - answer.units
+                            stock_quantity: chosenItem.stock_quantity - answer.units
                         },
                         {
-                            id: chosenItem.id
+                            item_id: chosenItem.item_id
                         }
                     ],
                     function(error){
+                        // console.log(error);
                         if (error) throw err;
                         console.log("You have successfully ordered your item(s).");
-                        start();
+                        console.log("Your total is $" + (chosenItem.price * answer.units));
                     }
                 );
             }
