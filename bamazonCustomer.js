@@ -1,7 +1,9 @@
+require("dotenv").config();
 var inquirer = require("inquirer");
 var mysql = require("mysql");
 // var config = require("./config");
 var Table = require('cli-table2');
+
 
 //Sets styling for table appearance
 var table = new Table({
