@@ -35,7 +35,7 @@ node bamazonManager.js
 ```
 
 ## Github link
-Github repo: https://github.com/beccashieh/LIRI-App
+Github repo: https://github.com/beccashieh/Bamazon
 
 ## Prerequisites
 
