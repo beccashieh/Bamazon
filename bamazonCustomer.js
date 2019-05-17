@@ -91,6 +91,7 @@ function start(){
                         if (error) throw err;
                         console.log("You have successfully ordered your item(s).");
                         console.log("Your total is $" + (chosenItem.price * answer.units));
+                        keepGoing();
                     }
                 );
             }
@@ -100,4 +101,23 @@ function start(){
             }
         });
     })
-}
+};
+
+function keepGoing(){
+    inquirer
+    .prompt([
+        {
+            name: "continue",
+            type: "confirm",
+            message: "Would you like to order another product?"
+        }
+    ])
+    .then(function(answer){
+        if (answer.continue == true){
+            start();
+        }
+        else {
+            connection.end();
+        }
+    })
+};
