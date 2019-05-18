@@ -19,11 +19,13 @@ var connection = mysql.createConnection({
     database: process.env.DB
 });
 
+//Begins connection to server
 connection.connect(function(err){
     if (err) throw err;
     start();
 });
 
+//Asks user which command they would like to do and runs corresponding function based on answer.
 function start(){
     inquirer
     .prompt([
@@ -54,6 +56,7 @@ function start(){
     })
 };
 
+//Pulls table from server
 function viewProducts(){
     connection.query("SELECT * FROM products", function(err, results){
         if (err) throw err;
@@ -72,6 +75,7 @@ function viewProducts(){
     })
 };
 
+//Shows products with an inventory of less than 5.
 function viewInventory(){
     connection.query("SELECT * FROM products WHERE stock_quantity < 5", function(err, res){
         if (err) throw err;
@@ -90,6 +94,8 @@ function viewInventory(){
         })
     };
 
+
+//Displays table and allows user to add to the stock quantity
 function addInventory(){
     connection.query("SELECT * FROM products", function(err, results){
         if (err) throw err;
@@ -145,6 +151,8 @@ function addInventory(){
     })
 };
 
+
+//Allows user to add a new product to the table
 function addProduct(){
     connection.query("SELECT * FROM products", function(err, results){
         if (err) throw err;
